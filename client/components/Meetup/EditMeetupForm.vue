@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const props = defineProps["meetup"];
+const props = defineProps(["meetup"]);
 const name = ref(props.meetup.name);
 const type = ref(props.meetup.type);
 const date = ref(props.meetup.date);
