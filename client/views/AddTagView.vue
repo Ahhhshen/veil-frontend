@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TagListComponent from "@/components/Tag/TagListComponent.vue";
+import AddTagsComponent from "@/components/Tag/AddTagsComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
@@ -8,8 +8,8 @@ const { currentUsername } = storeToRefs(useUserStore());
 
 <template>
   <main>
-    <h1>Tags for {{ currentUsername }}</h1>
-    <TagListComponent />
+    <h1>Select tags or create new one!</h1>
+    <AddTagsComponent />
   </main>
 </template>
 
@@ -27,7 +27,6 @@ h1 {
   font-weight: bold;
   margin: 0;
 }
-
 
     
 </style>

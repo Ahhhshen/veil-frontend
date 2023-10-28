@@ -2,10 +2,11 @@
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts","addTag"]);
+const emits = defineEmits(["editPost", "refreshPosts","addTag"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const deletePost = async () => {
@@ -14,7 +15,7 @@ const deletePost = async () => {
   } catch {
     return;
   }
-  emit("refreshPosts");
+  emits("refreshPosts");
 };
 
 const veilPost = async () => {
@@ -23,7 +24,7 @@ const veilPost = async () => {
   } catch {
     return;
   }
-  emit("refreshPosts");
+  emits("refreshPosts");
 };
 
 const unveilPost = async () => {
@@ -32,7 +33,14 @@ const unveilPost = async () => {
   } catch {
     return;
   }
-  emit("refreshPosts");
+  emits("refreshPosts");
+};
+
+const addTag = (post: any) => {
+  emits("addTag", post._id);
+  void router.push({ name: "AddTag"});
+  //console.log(post._id);
+  
 };
 
 </script>
@@ -45,10 +53,13 @@ const unveilPost = async () => {
     <menu v-if="props.post.author == currentUsername">
       <!-- Add icon library -->
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)"> <i class="fa fa-pencil" aria-hidden="true"></i></button></li>
+      <li><button class="btn-small pure-button" @click="emits('editPost', props.post._id)"> <i class="fa fa-pencil" aria-hidden="true"></i></button></li>
       <li v-if = "props.post.isVeiled == false"><button class="btn-veil btn-small pure-button" @click="veilPost"> <i class="fa fa-eye-slash"></i></button></li>
       <li v-else><button class="btn-unveil btn-small pure-button" @click="unveilPost"> <i class="fa fa-eye"></i></button></li>
-      <li><button class="btn-small pure-button" @click="emit('addTag', props.post.id)"> <i class="fa fa-tag" aria-hidden="true"></i></button></li>
+      <li><button class="btn-small pure-button" @click="addTag(props.post)">
+          <i class="fa fa-tag" aria-hidden="true"></i>
+          </button>
+      </li>
       <li><button class="button-error btn-small pure-button" @click="deletePost"> <i class="fa fa-trash"></i></button></li>
     </menu>
     <article class="timestamp">

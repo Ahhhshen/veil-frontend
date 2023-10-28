@@ -2,12 +2,13 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import AddTag from "../views/AddTagView.vue";
+import CabinetView from "../views/CabinetView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
+import MeetupView from "../views/MeetupView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import SettingView from "../views/SettingView.vue";
-import MeetupView from "../views/MeetupView.vue";
-import CabinetView from "../views/CabinetView.vue";
 import TaggedView from "../views/TaggedView.vue";
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: "/cabinet/taggedview",
       name: "TaggedView",
       component: TaggedView,
+    },
+    {
+      path: "/cabinet/addtag",
+      name: "AddTag",
+      component: AddTag,
     },
     {
       path: "/setting",

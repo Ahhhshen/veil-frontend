@@ -14,7 +14,7 @@ const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 
-async function getPosts(author: string) {
+async function getUserPosts(author: string) {
   let postResults;
   try {
     postResults = await fetchy("/api/posts", "GET", { query: { author } });
@@ -24,27 +24,25 @@ async function getPosts(author: string) {
   posts.value = postResults;
 }
 
-async function veilPost(){}
-
 function updateEditing(id: string) {
   editing.value = id;
 }
 
 onBeforeMount(async () => {
-  await getPosts(currentUsername.value);
+  await getUserPosts(currentUsername.value);
   loaded.value = true;
 });
 </script>
 
 <template>
   <section v-if="isLoggedIn">
-    <CreatePostForm @refreshPosts="getPosts(currentUsername)" />
+    <CreatePostForm @refreshPosts="getUserPosts(currentUsername)" />
   </section>
   
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts(currentUsername)" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts(currentUsername)" @editPost="updateEditing" />
+      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getUserPosts(currentUsername)" @editPost="updateEditing" />
+      <EditPostForm v-else :post="post" @refreshPosts="getUserPosts(currentUsername)" @editPost="updateEditing" />
     </article>
   </section>
 
