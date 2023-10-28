@@ -7,6 +7,8 @@ import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import SettingView from "../views/SettingView.vue";
 import MeetupView from "../views/MeetupView.vue";
+import CabinetView from "../views/CabinetView.vue";
+import TaggedView from "../views/TaggedView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +17,16 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: HomeView,
+    },
+    {
+      path: "/cabinet",
+      name: "Cabinet",
+      component: CabinetView,
+    },
+    {
+      path: "/cabinet/taggedview",
+      name: "TaggedView",
+      component: TaggedView,
     },
     {
       path: "/setting",

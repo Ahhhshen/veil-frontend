@@ -5,7 +5,7 @@ import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts"]);
+const emit = defineEmits(["editPost", "refreshPosts","addTag"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const deletePost = async () => {
@@ -16,15 +16,40 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+const veilPost = async () => {
+  try {
+    await fetchy(`/api/posts/${props.post._id}/veil`, "PUT");
+  } catch {
+    return;
+  }
+  emit("refreshPosts");
+};
+
+const unveilPost = async () => {
+  try {
+    await fetchy(`/api/posts/${props.post._id}/unveil`, "PUT");
+  } catch {
+    return;
+  }
+  emit("refreshPosts");
+};
+
 </script>
 
 <template>
   <p class="author">{{ props.post.author }}</p>
-  <p>{{ props.post.content }}</p>
+  <p v-if = "props.post.isVeiled == false">{{ props.post.content }}</p>
+  <p v-else class="veiled">{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+      <!-- Add icon library -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)"> <i class="fa fa-pencil" aria-hidden="true"></i></button></li>
+      <li v-if = "props.post.isVeiled == false"><button class="btn-veil btn-small pure-button" @click="veilPost"> <i class="fa fa-eye-slash"></i></button></li>
+      <li v-else><button class="btn-unveil btn-small pure-button" @click="unveilPost"> <i class="fa fa-eye"></i></button></li>
+      <li><button class="btn-small pure-button" @click="emit('addTag', props.post.id)"> <i class="fa fa-tag" aria-hidden="true"></i></button></li>
+      <li><button class="button-error btn-small pure-button" @click="deletePost"> <i class="fa fa-trash"></i></button></li>
     </menu>
     <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
@@ -36,6 +61,10 @@ const deletePost = async () => {
 <style scoped>
 p {
   margin: 0em;
+}
+
+.veiled {
+  color: #999;
 }
 
 .author {

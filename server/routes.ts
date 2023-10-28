@@ -164,6 +164,20 @@ class Routes {
     return await Post.update(_id, update);
   }
 
+  @Router.put("/posts/:_id/veil")
+  async veilPost(session: WebSessionDoc, _id: ObjectId) {
+    const user = WebSession.getUser(session);
+    await Post.isAuthor(user, _id);
+    return await Post.update(_id, { isVeiled: true });
+  }
+
+  @Router.put("/posts/:_id/unveil")
+  async unveilPost(session: WebSessionDoc, _id: ObjectId) {
+    const user = WebSession.getUser(session);
+    await Post.isAuthor(user, _id);
+    return await Post.update(_id, { isVeiled: false });
+  }
+
   @Router.delete("/posts/:_id")
   async deletePost(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);

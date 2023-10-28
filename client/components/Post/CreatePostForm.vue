@@ -23,10 +23,11 @@ const emptyForm = () => {
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <form @submit.prevent="createPost(content)">
     <label for="content">Post Contents:</label>
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
-    <button type="submit" class="pure-button-primary pure-button">Create Post</button>
+    <button type="submit" class="btn-submit pure-button"> <i class="fa fa-plus-circle"></i></button>
   </form>
 </template>
 

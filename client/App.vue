@@ -22,21 +22,31 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <header>
     <nav>
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1><i>Veil</i></h1>
+          <h1><i>V E I L</i></h1>
         </RouterLink>
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> <i class="fa fa-home"></i> </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
-          <RouterLink :to="{ name: 'Meetup' }" :class="{ underline: currentRouteName == 'Meetup' }"> Meetup </RouterLink>
+          <ul>
+            <li>
+              <RouterLink :to="{ name: 'Cabinet' }" :class="{ underline: currentRouteName == 'Cabinet' }"> My Cabinet </RouterLink>
+            </li>
+            <li>
+              <RouterLink :to="{ name: 'Meetup' }" :class="{ underline: currentRouteName == 'Meetup' }"> <i class="fa fa-meetup" aria-hidden="true"></i> </RouterLink>
+            </li>
+            <li>
+              <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> <i class="fa fa-cog" aria-hidden="true"></i> </RouterLink>
+            </li>
+            
+          </ul>          
         </li>
         <li v-else>
           <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
@@ -55,7 +65,7 @@ onBeforeMount(async () => {
 
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: #264653;
   display: flex;
   align-items: center;
 }
@@ -63,6 +73,7 @@ nav {
 h1 {
   font-size: 2em;
   margin: 0;
+  color: #f4a261;
 }
 
 .title {
@@ -77,7 +88,7 @@ img {
 
 a {
   font-size: large;
-  color: black;
+  color: #f4a261;
   text-decoration: none;
 }
 
