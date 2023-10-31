@@ -15,7 +15,7 @@ let editing = ref("");
 async function getUserTags(author: string) {
   let tagResults;
   try {
-    tagResults = await fetchy("/api/tags", "GET", { query: { author } });
+    tagResults = await fetchy(`/api/${author}/tags`, "GET");
   } catch (_) {
     return;
   }

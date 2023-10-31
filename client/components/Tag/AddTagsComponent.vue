@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PostComponent from "@/components/Post/PostComponent.vue";
+import { usePostToTagStore } from "@/stores/postToTag";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
@@ -9,6 +10,7 @@ import TagComponent from './TagComponent.vue';
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 const { currentUsername } = storeToRefs(useUserStore());
+const { currentPostToTag } = storeToRefs(usePostToTagStore());
 
 const loaded = ref(false);
 let tags = ref<Array<Record<string, string>>>([]);
@@ -28,7 +30,7 @@ async function getPostByID(id: string) {
 async function getUserTags(author: string) {
   let tagResults;
   try {
-    tagResults = await fetchy("/api/tags", "GET", { query: { author } });
+    tagResults = await fetchy(`/api/${author}/tags`, "GET");
   } catch (_) {
     return;
   }
@@ -46,7 +48,7 @@ async function addTagToPost(post: any, tag_id: string) {
 async function setTargetPost(post_id: string) {
   let post = await getPostByID(post_id);
   posttotag.value = post;
-  console.log(posttotag.value); 
+  //console.log(posttotag.value); 
 }
 
 function updateEditing(id: string) {
@@ -55,6 +57,7 @@ function updateEditing(id: string) {
 
 onBeforeMount(async () => {
   await getUserTags(currentUsername.value);
+  await setTargetPost(currentPostToTag.value);
   loaded.value = true;
 });
 
@@ -62,11 +65,12 @@ onBeforeMount(async () => {
 
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <section v-if="isLoggedIn" @addTag="setTargetPost">
+    <div>
+      <section v-if="isLoggedIn">
         <CreateTagForm :content_id = "posttotag._id"/>
         <PostComponent  :post="posttotag"/>
-    </section>
+      </section>
+    </div>
     
     <section class="tags" v-if="loaded && tags.length !== 0" >
         <article v-for="tag in tags" :key="tag._id">

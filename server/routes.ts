@@ -218,7 +218,7 @@ class Routes {
       // Add this tag to the user's content cabinet
       await ContentCabinet.addTag(user, tag._id);
       // Add this tag to the user's discovery's preference
-      await Discovery.addTagToPreference(user, tag._id);
+      //await Discovery.addTagToPreference(user, tag._id);
     }
     return { msg: created.msg, tag };
   }
@@ -236,11 +236,10 @@ class Routes {
     return await Responses.post(await Post.getById(post_id));
   }
 
-  @Router.get("/tags")
+  @Router.get("/:username/tags")
   async getUserTags(username: string) {
-    let tags;
     const user = await User.getUserByUsername(username);
-    tags = await Tag.getByAuthor(user._id);
+    const tags = await Tag.getByAuthor(user._id);
     return await Responses.tags(tags);
   }
 

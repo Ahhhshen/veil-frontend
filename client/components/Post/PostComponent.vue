@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePostToTagStore } from "@/stores/postToTag";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import router from "../../router";
@@ -7,6 +8,7 @@ import { fetchy } from "../../utils/fetchy";
 const props = defineProps(["post"]);
 const emits = defineEmits(["editPost", "refreshPosts","addTag"]);
 const { currentUsername } = storeToRefs(useUserStore());
+const { setCurrentPostToTag } = usePostToTagStore();
 
 const deletePost = async () => {
   try {
@@ -37,7 +39,8 @@ const unveilPost = async () => {
 
 const addTag = (post: any) => {
   void router.push({ name: "AddTag"});
-  emits("addTag", post._id);
+  // emits("addTag", post._id);
+  setCurrentPostToTag(post._id);
   console.log(post._id);
   return;
 };
