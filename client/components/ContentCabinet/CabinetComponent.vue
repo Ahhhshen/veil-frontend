@@ -11,17 +11,30 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 const { currentUsername } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
-let posts = ref<Array<Record<string, string>>>([]);
+let UserCabinet = ref<Record<string, string>>({});
+let contents = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 
-async function getUserPosts(author: string) {
-  let postResults;
+async function getUserCabinet(author: string) {
+    UserCabinet = await fetchy("/api/cabinet", "GET", { query: { author } });
+    // create a cabinet for the user if they don't have one
+    if (UserCabinet.value == null) {
+      try {
+      await fetchy("/api/cabinet", "POST", { body: { author } });
+      } catch (_) {
+      return;
+      }
+    }
+}
+
+async function getUserCabinetContents() {
+  let postResults;// for now, veil only support posts
   try {
-    postResults = await fetchy("/api/posts", "GET", { query: { author } });
+    postResults = await fetchy("/api/cabinet/contents", "GET");
   } catch (_) {
     return;
   }
-  posts.value = postResults;
+  contents.value = postResults;
 }
 
 function updateEditing(id: string) {
@@ -29,24 +42,25 @@ function updateEditing(id: string) {
 }
 
 onBeforeMount(async () => {
-  await getUserPosts(currentUsername.value);
+  await getUserCabinet(currentUsername.value);
+  await getUserCabinetContents();
   loaded.value = true;
 });
 </script>
 
 <template>
   <section v-if="isLoggedIn">
-    <CreatePostForm @refreshPosts="getUserPosts(currentUsername)" />
+    <CreatePostForm @refreshPosts="getUserCabinetContents()" />
   </section>
   
-  <section class="posts" v-if="loaded && posts.length !== 0">
-    <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getUserPosts(currentUsername)" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getUserPosts(currentUsername)" @editPost="updateEditing" />
+  <section class="posts" v-if="loaded && contents.length !== 0">
+    <article v-for="post in contents" :key="post._id">
+      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getUserCabinetContents()" @editPost="updateEditing" />
+      <EditPostForm v-else :post="post" @refreshPosts="getUserCabinetContents()" @editPost="updateEditing" />
     </article>
   </section>
 
-  <p v-else-if="loaded">No posts found</p>
+  <p v-else-if="loaded">No contents found</p>
   <p v-else>Loading...</p>
 </template>
 

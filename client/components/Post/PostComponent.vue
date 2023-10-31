@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
@@ -37,10 +36,10 @@ const unveilPost = async () => {
 };
 
 const addTag = (post: any) => {
-  emits("addTag", post._id);
   void router.push({ name: "AddTag"});
-  //console.log(post._id);
-  
+  emits("addTag", post._id);
+  console.log(post._id);
+  return;
 };
 
 </script>
@@ -62,10 +61,10 @@ const addTag = (post: any) => {
       </li>
       <li><button class="button-error btn-small pure-button" @click="deletePost"> <i class="fa fa-trash"></i></button></li>
     </menu>
-    <article class="timestamp">
+    <!-- <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
-    </article>
+    </article> -->
   </div>
 </template>
 

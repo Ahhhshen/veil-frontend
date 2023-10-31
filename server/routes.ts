@@ -145,6 +145,11 @@ class Routes {
     return Responses.posts(posts);
   }
 
+  @Router.get("/posts/:_id")
+  async getPost(_id: ObjectId) {
+    return Responses.post(await Post.getById(_id));
+  }
+
   @Router.post("/posts")
   async createPost(session: WebSessionDoc, content: string, options?: PostOptions) {
     const user = WebSession.getUser(session);
@@ -232,14 +237,10 @@ class Routes {
   }
 
   @Router.get("/tags")
-  async getUserTags(username?: string) {
+  async getUserTags(username: string) {
     let tags;
-    if (username) {
-      const user = await User.getUserByUsername(username);
-      tags = await Tag.getByAuthor(user._id);
-    } else {
-      tags = await Tag.getTags({});
-    }
+    const user = await User.getUserByUsername(username);
+    tags = await Tag.getByAuthor(user._id);
     return await Responses.tags(tags);
   }
 

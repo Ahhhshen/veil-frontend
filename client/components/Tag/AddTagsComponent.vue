@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
@@ -12,7 +13,17 @@ const { currentUsername } = storeToRefs(useUserStore());
 const loaded = ref(false);
 let tags = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
-let posttotag = ref("");
+let posttotag = ref<Record<string, string>>({});
+
+async function getPostByID(id: string) {
+  let postResults;
+  try {
+    postResults = await fetchy(`/api/posts/${id}`, "GET");
+  } catch (_) {
+    return;
+  }
+  return postResults;
+}
 
 async function getUserTags(author: string) {
   let tagResults;
@@ -33,8 +44,9 @@ async function addTagToPost(post: any, tag_id: string) {
 }
 
 async function setTargetPost(post_id: string) {
-    posttotag.value = post_id;
-    console.log(posttotag.value);
+  let post = await getPostByID(post_id);
+  posttotag.value = post;
+  console.log(posttotag.value); 
 }
 
 function updateEditing(id: string) {
@@ -50,8 +62,13 @@ onBeforeMount(async () => {
 
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <section v-if="isLoggedIn" @addTag="setTargetPost">
+        <CreateTagForm :content_id = "posttotag._id"/>
+        <PostComponent  :post="posttotag"/>
+    </section>
     
-    <section class="tags" v-if="loaded && tags.length !== 0" @addTag = "setTargetPost">
+    <section class="tags" v-if="loaded && tags.length !== 0" >
         <article v-for="tag in tags" :key="tag._id">
             <ul>
                 <li><TagComponent v-if="editing !== tag._id" :tag="tag" @refreshTags="getUserTags(currentUsername)" @editTag="updateEditing" />
@@ -61,10 +78,6 @@ onBeforeMount(async () => {
         </article>
     </section>
 
-    <section v-if="isLoggedIn">
-        <CreateTagForm :content_id = "posttotag"/>
-        
-    </section>
     
     <p v-else-if="loaded">No tags found</p>
     <p v-else>Loading...</p>
